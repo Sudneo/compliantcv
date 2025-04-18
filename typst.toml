@@ -1,0 +1,18 @@
+[package]
+name = "compliantcv"
+version = "1.0.0"
+compiler = "0.13.1"
+entrypoint = "cv.typ"
+authors = ["Daniele Mucci (daniele@mucci.me)"]
+license = "Apache-2.0"
+description = "A JSONResume compliant CV template inspired by imprecv using TOML template"
+keywords = ["CV", "Curriculum Vitae", "Resume", "Minimalistic", "Professional", "TOML", "Data"]
+categories = ["cv"]
+disciplines = []
+homepage = "https://github.com/sudneo/compliantcv"
+repository = "https://github.com/sudneo/compliantcv"
+
+
+[template]
+path = "template"
+entrypoint = "template.typ"
