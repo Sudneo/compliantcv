@@ -78,9 +78,9 @@
         if "email" in data.resume.basics and data.resume.basics.email != none { box(link("mailto:"+
       data.resume.basics.email)[#emoji.mail #data.resume.basics.email]) },
         if ("phone" in data.resume.basics and data.resume.basics.phone != none) and uservars.showNumber {box(link("tel:"
-      + data.resume.basics.phone)[#emoji.phone.receiver #data.resume.basics.phone])} else {none},
+      + data.resume.basics.phone)[#data.resume.basics.phone])} else {none},
         if ("url" in data.resume.basics) and (data.resume.basics.url != none) {
-            box(link(data.resume.basics.url)[#emoji.globe.meridian #data.resume.basics.url.split("//").at(1)])
+            box(link(data.resume.basics.url)[#data.resume.basics.url.split("//").at(1)])
         }
     ).filter(it => it != none) // Filter out none elements from the profile array
 
