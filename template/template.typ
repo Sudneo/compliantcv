@@ -1,8 +1,9 @@
 #import "utils.typ"
 #import "cv.typ"
-
+// Load all the data
 #let data = toml("/data/data.toml")
 
+// Set some configuration values
 #let uservars = (
     headingfont: data.typst.fontHeading,
     bodyfont: data.typst.fontBody,
@@ -30,6 +31,7 @@
         number-align: center,
         margin: (left:1.25cm, right: 1.25cm)
     )
+    // Colored banner
     place(
       dx: -1.25cm,
       dy: -2.5cm,
@@ -40,8 +42,6 @@
         stroke: none,
       ),
   )
-
-    // set list(indent: 1em)
 
     doc
 }
@@ -57,6 +57,7 @@
 #show: doc => cvinit(doc)
 
 #cv.cvheading(data, uservars)
+// Reorder sections if you wish
 #cv.cvwork(data)
 #cv.cvcertificates(data)
 #cv.cveducation(data)

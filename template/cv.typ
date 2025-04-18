@@ -61,7 +61,7 @@
     doc
 }
 
-// Job titles
+// Job title
 #let jobtitletext(info, uservars) = {
     if ("label" in info.resume.basics and info.resume.basics.label != none) and uservars.showTitle {
         block(width: 100%)[
@@ -72,9 +72,11 @@
     } else {none}
 }
 
+// Contacts and social profiles
 #let contacttext(data, uservars) = block(width: 100%)[
     #set text(fill: white)
     #let contacts = (
+        // Make sure to have an emoji font installed if you want to keep symbols!
         if "email" in data.resume.basics and data.resume.basics.email != none { box(link("mailto:"+
       data.resume.basics.email)[#emoji.mail #data.resume.basics.email]) },
         if ("phone" in data.resume.basics and data.resume.basics.phone != none) and uservars.showNumber {box(link("tel:"
@@ -84,6 +86,7 @@
         }
     ).filter(it => it != none) // Filter out none elements from the profile array
 
+    // Social profiles on a separate line
     #let profiles = ()
     #if ("profiles" in data.resume.basics) and (data.resume.basics.profiles.len() > 0) and uservars.showProfiles {
       for profile in data.resume.basics.profiles {
@@ -100,9 +103,12 @@
     }
 ]
 
+// The colored banner and its content
 #let cvheading(data, uservars) = {
+    // Shifted of the expected margin
     v(-1.25cm)
     grid(
+      // Keep [ 20 | 60 | 20 ] so that QR and Portrait can go left/right and content in the center stays centered
       columns: (20%, 60%, 20%),
       gutter: 0em,
       align: (start, center, end),
@@ -112,6 +118,7 @@
           height: 2cm,
           clip: true,
           radius: 0%,
+          // White rectangle around the QR code
           rect(width: 100%, inset:2pt, height: 100%, stroke: 2pt + white, image(uservars.QRPath, width: 100%, height: 100%, fit: "cover"))
 
         )
@@ -122,6 +129,7 @@
           #contacttext(data, uservars)
       ],
       if uservars.showPortrait {
+      // white circle with inside a box that crops the portrait (to fit a circle)
       circle(radius: 0.9cm, inset: -5pt, outset: 0pt, stroke: 1pt + white,  
         box(
           width: 100%,
@@ -135,9 +143,11 @@
 }
 
 
+// Work section
 #let cvwork(info, title: "Work Experience", isbreakable: true) = {
     if ("work" in info.resume) and (info.resume.work != none) {block(breakable: true)[
         == #title
+        // Each work is a separate unbreakable block
         #for w in info.resume.work {
         block(width:100%, breakable: false, above:1.5em)[
             #block(width: 100%, breakable: false, above: 1.5em)[
@@ -176,6 +186,7 @@
   }
 }
 
+// Education section
 #let cveducation(info, title: "Education", isbreakable: true) = {
     if ("education" in info.resume) and (info.resume.education != none) {block[
         == #title
@@ -201,7 +212,7 @@
 
             // Create a block layout for each education entry
             block(width: 100%, breakable: isbreakable)[
-                // Line 1: Institution and Location
+                // Line 1: Institution
                 #if ("url" in edu) and (edu.url != none) [
                     *#link(edu.url)[#edu.institution]* #h(1fr) \
                 ] else [
@@ -220,36 +231,7 @@
     ]}
 }
 
-#let cvaffiliations(info, title: "Leadership and Activities", isbreakable: true) = {
-    if ("affiliations" in info) and (info.affiliations != none) {block[
-        == #title
-        #for org in info.affiliations {
-            // Parse ISO date strings into datetime objects
-            let start = utils.strpdate(org.startDate)
-            let end = utils.strpdate(org.endDate)
-
-            // Create a block layout for each affiliation entry
-            block(width: 100%, breakable: isbreakable)[
-                // Line 1: Organization and Location
-                #if ("url" in org) and (org.url != none) [
-                    *#link(org.url)[#org.organization]* #h(1fr) *#org.location* \
-                ] else [
-                    *#org.organization* #h(1fr) *#org.location* \
-                ]
-                // Line 2: Position and Date
-                #text(style: "italic")[#org.position] #h(1fr)
-                #utils.daterange(start, end) \
-                // Highlights or Description
-                #if ("highlights" in org) and (org.highlights != none) {
-                    for hi in org.highlights [
-                        - #eval(hi, mode: "markup")
-                    ]
-                } else {}
-            ]
-        }
-    ]}
-}
-
+// Project section
 #let cvprojects(info, title: "Projects", isbreakable: true) = {
     if ("projects" in info.resume) and (info.resume.projects != none) {block[
         == #title
@@ -280,33 +262,7 @@
     ]}
 }
 
-#let cvawards(info, title: "Honors and Awards", isbreakable: true) = {
-    if ("awards" in info) and (info.awards != none) {block[
-        == #title
-        #for award in info.awards {
-            // Parse ISO date strings into datetime objects
-            let date = utils.strpdate(award.date)
-            // Create a block layout for each award entry
-            block(width: 100%, breakable: isbreakable)[
-                // Line 1: Award Title and Location
-                #if ("url" in award) and (award.url != none) [
-                    *#link(award.url)[#award.title]* #h(1fr) *#award.location* \
-                ] else [
-                    *#award.title* #h(1fr) *#award.location* \
-                ]
-                // Line 2: Issuer and Date
-                Issued by #text(style: "italic")[#award.issuer]  #h(1fr) #date \
-                // Summary or Description
-                #if ("highlights" in award) and (award.highlights != none) {
-                    for hi in award.highlights [
-                        - #eval(hi, mode: "markup")
-                    ]
-                } else {}
-            ]
-        }
-    ]}
-}
-
+// Certificates section
 #let cvcertificates(info, title: "Licenses and Certifications", isbreakable: true) = {
     if ("certificates" in info.resume) and (info.resume.certificates != none) {block[
         == #title
@@ -333,6 +289,7 @@
     ]}
 }
 
+// Publication section
 #let cvpublications(info, title: "Research and Publications", isbreakable: true) = {
     if ("publications" in info.resume) and (info.resume.publications != none) {block[
         == #title
@@ -359,6 +316,7 @@
     ]}
 }
 
+// Skill, languages and interests section
 #let cvskills(info, title: "Skills, Languages, Interests", isbreakable: true) = {
     if (("languages" in info.resume) or ("skills" in info.resume) or ("interests" in info.resume)) and ((info.resume.languages != none)
   or (info.resume.skills != none) or (info.resume.interests != none)) {block(breakable: isbreakable)[
@@ -383,21 +341,7 @@
     ]}
 }
 
-#let cvreferences(info, title: "References", isbreakable: true) = {
-    if ("references" in info) and (info.references != none) {block[
-        == #title
-        #for ref in info.references {
-            block(width: 100%, breakable: isbreakable)[
-                #if ("url" in ref) and (ref.url != none) [
-                    - *#link(ref.url)[#ref.name]*: "#ref.reference"
-                ] else [
-                    - *#ref.name*: "#ref.reference"
-                ]
-            ]
-        }
-    ]} else {}
-}
-
+// Footer with timestamp
 #let endnote(uservars) = {
   if uservars.sendnote {
     place(
